@@ -4,9 +4,26 @@ import initYoga from "yoga-wasm-web";
 import yogaWasm from "../node_modules/yoga-wasm-web/dist/yoga.wasm";
 import resvgWasm from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
 
+let initialized = false;
+let robotoArrayBuffer = null;
+const initialize = async () =>
+    Promise.all([
+        await initWasm(resvgWasm),
+        init(await initYoga(yogaWasm)),
+        (robotoArrayBuffer = await (
+            await fetch(
+                "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/fonts/roboto/Roboto-Regular.ttf"
+            )
+        ).arrayBuffer()),
+    ]);
 export default {
     async fetch(request, env, ctx) {
         if (request.url.includes("favicon")) return new Response("");
+
+        if (!initialized) {
+            await initialize();
+            initialized = true;
+        }
 
         const urlSearch = new URL(request.url).searchParams;
 
@@ -14,12 +31,6 @@ export default {
         const bg = urlSearch.get("bg") || "white";
         const width = Number(urlSearch.get("w")) || 200;
         const height = Number(urlSearch.get("h")) || 200;
-        const f = await fetch(
-            "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/fonts/roboto/Roboto-Regular.ttf"
-        );
-        const robotoArrayBuffer = await f.arrayBuffer();
-        const yoga = await initYoga(yogaWasm);
-        init(yoga);
 
         const svg = await satori(
             {
@@ -47,9 +58,7 @@ export default {
                 ],
             }
         );
-        try {
-            await initWasm(resvgWasm);
-        } catch (e) {}
+
         const resvg = new Resvg(svg);
         const pngData = resvg.render();
         const pngBuffer = pngData.asPng();
