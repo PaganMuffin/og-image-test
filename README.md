@@ -13,4 +13,7 @@ h - height, default 200 </br>
 title - test to show, default test </br>
 bg - value to use with 'background-color', default white </br>
 
+params options: </br>
+/bb - rendering more complex image, query string ignored </ br>
+
 Example url: https://og-image-test.pamumu.workers.dev/ </br>
