@@ -1,22 +1,11 @@
-//@ts-ignore
 import { initWasm, Resvg } from "@resvg/resvg-wasm";
-//@ts-ignore
 import satori, { init } from "satori/wasm";
-//@ts-ignore
 import initYoga from "yoga-wasm-web";
-//@ts-ignore
 import wasmModule from "../node_modules/yoga-wasm-web/dist/yoga.wasm";
-//@ts-ignore
 import wasmModule2 from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
 
-export interface Env {}
-
 export default {
-    async fetch(
-        request: Request,
-        env: Env,
-        ctx: ExecutionContext
-    ): Promise<Response> {
+    async fetch(request, env, ctx) {
         if (request.url.includes("favicon")) return new Response("");
 
         const title = new URL(request.url).searchParams.get("title") || "test";
