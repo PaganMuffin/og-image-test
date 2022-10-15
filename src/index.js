@@ -32,8 +32,10 @@ export default {
         const bb = url.pathname === "/bb";
         const title = urlSearch.get("title") || "test";
         const bg = urlSearch.get("bg") || "white";
-        const width = Number(urlSearch.get("w")) || bb ? 1024 : 200;
-        const height = Number(urlSearch.get("h")) || bb ? 512 : 200;
+        const width = bb ? 1024 : Number(urlSearch.get("w")) || 200;
+        const height = bb ? 512 : Number(urlSearch.get("h")) || 200;
+
+        console.log(Number(urlSearch.get("w")), width);
 
         const standardObj = {
             type: "div",
