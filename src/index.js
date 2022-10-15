@@ -3,6 +3,7 @@ import satori, { init } from "satori/wasm";
 import initYoga from "yoga-wasm-web";
 import yogaWasm from "../node_modules/yoga-wasm-web/dist/yoga.wasm";
 import resvgWasm from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
+import bb_example from "./bb_example";
 
 let initialized = false;
 let robotoArrayBuffer = null;
@@ -25,39 +26,40 @@ export default {
             initialized = true;
         }
 
-        const urlSearch = new URL(request.url).searchParams;
+        const url = new URL(request.url);
+        const urlSearch = url.searchParams;
 
+        const bb = url.pathname === "/bb";
         const title = urlSearch.get("title") || "test";
         const bg = urlSearch.get("bg") || "white";
-        const width = Number(urlSearch.get("w")) || 200;
-        const height = Number(urlSearch.get("h")) || 200;
+        const width = Number(urlSearch.get("w")) || bb ? 1024 : 200;
+        const height = Number(urlSearch.get("h")) || bb ? 512 : 200;
 
-        const svg = await satori(
-            {
-                type: "div",
-                props: {
-                    children: title,
-                    style: {
-                        backgroundColor: bg,
-                        height: height,
-                        width: width,
-                        wordBreak: "break-all",
-                    },
+        const standardObj = {
+            type: "div",
+            props: {
+                children: title,
+                style: {
+                    backgroundColor: bg,
+                    height: height,
+                    width: width,
+                    wordBreak: "break-all",
                 },
             },
-            {
-                height: height,
-                width: width,
-                fonts: [
-                    {
-                        name: "Roboto",
-                        data: robotoArrayBuffer,
-                        weight: 400,
-                        style: "normal",
-                    },
-                ],
-            }
-        );
+        };
+
+        const svg = await satori(bb ? bb_example : standardObj, {
+            height: height,
+            width: width,
+            fonts: [
+                {
+                    name: "Roboto",
+                    data: robotoArrayBuffer,
+                    weight: 400,
+                    style: "normal",
+                },
+            ],
+        });
 
         const resvg = new Resvg(svg);
         const pngData = resvg.render();
