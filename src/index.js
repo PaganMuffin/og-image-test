@@ -37,6 +37,15 @@ export default {
             return await objExample(robotoArrayBuffer, request);
         }
 
-        return new Response("");
+        if (path == "/favicon.ico") {
+            return new Response("", 404);
+        }
+
+        return new Response("", {
+            status: 307,
+            headers: {
+                location: "https://github.com/PaganMuffin/og-image-test",
+            },
+        });
     },
 };
