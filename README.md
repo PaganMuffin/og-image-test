@@ -1,19 +1,21 @@
+## Example of generating PNG from html on Cloudflare Workers by using Satori and resvg-wasm.
 
-Example of generating PNG from html on Cloudflare Workers by using Satori and resvg-wasm.
+Satori: https://github.com/vercel/satori - HTML/JSX to SVG </br>
+resvg: https://github.com/RazrFalcon/resvg - rendering SVG to PNG </br>
+resvg-wasm: https://www.npmjs.com/package/@resvg/resvg-wasm - rendering SVG to PNG </br>
 
-Satori: https://github.com/vercel/satori </br>
-resvg: https://github.com/RazrFalcon/resvg </br>
-resvg-wasm: https://www.npmjs.com/package/@resvg/resvg-wasm </br>
+Demo URL: https://og-image-test.pamumu.workers.dev/
 
+## Simple card card: </br>
 
-Demo: </br>
-url query params: </br>
-w - width, default 200 </br> 
-h - height, default 200 </br>
-title - test to show, default test </br>
-bg - value to use with 'background-color', default white </br>
+Generating from obj: https://og-image-test.pamumu.workers.dev/obj/simple </br>
+Generating from jsx: https://og-image-test.pamumu.workers.dev/jsx/simple </br>
 
-params options: </br>
-/bb - rendering more complex image, query string ignored </ br>
+## Breaking Bad card: </br>
 
-Example url: https://og-image-test.pamumu.workers.dev/ </br>
+Generating from obj: https://og-image-test.pamumu.workers.dev/obj/bb </br>
+Generating from jsx: https://og-image-test.pamumu.workers.dev/jsx/bb </br>
+
+## Statistics (from Cloudflare dashboard): </br>
+
+//TODO
