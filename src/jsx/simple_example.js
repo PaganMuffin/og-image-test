@@ -1,31 +1,30 @@
-import { initWasm, Resvg } from "@resvg/resvg-wasm";
-import satori, { init } from "satori/wasm";
+import { Resvg } from "@resvg/resvg-wasm";
+import satori from "satori/wasm";
+import React from "react";
 
-const objExample = async (robotoArrayBuffer, request) => {
+const simpleExample = async (robotoArrayBuffer, request) => {
     const url = new URL(request.url);
     const urlSearch = url.searchParams;
 
-    const bb = url.pathname.includes("bb");
-
     const title = urlSearch.get("title") || "test";
     const bg = urlSearch.get("bg") || "white";
-    const width = bb ? 1024 : Number(urlSearch.get("w")) || 200;
-    const height = bb ? 512 : Number(urlSearch.get("h")) || 200;
+    const width = Number(urlSearch.get("w")) || 200;
+    const height = Number(urlSearch.get("h")) || 200;
 
-    const standardObj = {
-        type: "div",
-        props: {
-            children: title,
-            style: {
+    const simpleObj = (
+        <div
+            style={{
                 backgroundColor: bg,
                 height: height,
                 width: width,
                 wordBreak: "break-all",
-            },
-        },
-    };
+            }}
+        >
+            {title}
+        </div>
+    );
 
-    const svg = await satori(bb ? bb_example : standardObj, {
+    const svg = await satori(simpleObj, {
         height: height,
         width: width,
         fonts: [
@@ -49,4 +48,4 @@ const objExample = async (robotoArrayBuffer, request) => {
     });
 };
 
-export default objExample;
+export default simpleExample;

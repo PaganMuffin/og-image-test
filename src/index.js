@@ -3,8 +3,8 @@ import { init } from "satori/wasm";
 import initYoga from "yoga-wasm-web";
 import yogaWasm from "../node_modules/yoga-wasm-web/dist/yoga.wasm";
 import resvgWasm from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
-import objExample from "./object_example";
-import jsxExample from "./jsx_example";
+import jsxExample from "./jsx";
+import objExample from "./obj";
 
 let initialized = false;
 let robotoArrayBuffer = null;
@@ -24,17 +24,19 @@ export default {
         const url = new URL(request.url);
         const path = url.pathname;
 
-        if (path.includes("favicon.ico")) return new Response("");
-
         if (!initialized) {
             await initialize();
             initialized = true;
         }
 
-        if (path.includes("jsx")) {
-            return await jsxExample(robotoArrayBuffer);
+        if (path.startsWith("/jsx")) {
+            return await jsxExample(robotoArrayBuffer, request);
         }
 
-        return await objExample(robotoArrayBuffer, request);
+        if (path.startsWith("/obj")) {
+            return await objExample(robotoArrayBuffer, request);
+        }
+
+        return new Response("");
     },
 };

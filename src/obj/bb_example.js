@@ -1,3 +1,6 @@
+import { Resvg } from "@resvg/resvg-wasm";
+import satori from "satori/wasm";
+
 const banner = "https://i.imgur.com/ZJS52PJ.jpg";
 const cover = "https://i.imgur.com/1r6kpmB.jpg";
 
@@ -150,4 +153,32 @@ const bb_example = {
     },
 };
 
-export default bb_example;
+const bbExample = async (robotoArrayBuffer) => {
+    const width = 1024;
+    const height = 512;
+
+    const svg = await satori(bb_example, {
+        height: height,
+        width: width,
+        fonts: [
+            {
+                name: "Roboto",
+                data: robotoArrayBuffer,
+                weight: 400,
+                style: "normal",
+            },
+        ],
+    });
+
+    const resvg = new Resvg(svg);
+    const pngData = resvg.render();
+    const pngBuffer = pngData.asPng();
+
+    return new Response(pngBuffer, {
+        headers: {
+            "content-type": "image/png",
+        },
+    });
+};
+
+export default bbExample;
