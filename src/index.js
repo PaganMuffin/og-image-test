@@ -1,12 +1,14 @@
-import { initWasm, Resvg } from "@resvg/resvg-wasm";
-import satori, { init } from "satori/wasm";
+import { initWasm } from "@resvg/resvg-wasm";
+import { init } from "satori/wasm";
 import initYoga from "yoga-wasm-web";
 import yogaWasm from "../node_modules/yoga-wasm-web/dist/yoga.wasm";
 import resvgWasm from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
-import bb_example from "./bb_example";
+import objExample from "./object_example";
+import jsxExample from "./jsx_example";
 
 let initialized = false;
 let robotoArrayBuffer = null;
+
 const initialize = async () =>
     Promise.all([
         await initWasm(resvgWasm),
@@ -19,58 +21,20 @@ const initialize = async () =>
     ]);
 export default {
     async fetch(request, env, ctx) {
-        if (request.url.includes("favicon")) return new Response("");
+        const url = new URL(request.url);
+        const path = url.pathname;
+
+        if (path.includes("favicon.ico")) return new Response("");
 
         if (!initialized) {
             await initialize();
             initialized = true;
         }
 
-        const url = new URL(request.url);
-        const urlSearch = url.searchParams;
+        if (path.includes("jsx")) {
+            return await jsxExample(robotoArrayBuffer);
+        }
 
-        const bb = url.pathname === "/bb";
-        const title = urlSearch.get("title") || "test";
-        const bg = urlSearch.get("bg") || "white";
-        const width = bb ? 1024 : Number(urlSearch.get("w")) || 200;
-        const height = bb ? 512 : Number(urlSearch.get("h")) || 200;
-
-        console.log(Number(urlSearch.get("w")), width);
-
-        const standardObj = {
-            type: "div",
-            props: {
-                children: title,
-                style: {
-                    backgroundColor: bg,
-                    height: height,
-                    width: width,
-                    wordBreak: "break-all",
-                },
-            },
-        };
-
-        const svg = await satori(bb ? bb_example : standardObj, {
-            height: height,
-            width: width,
-            fonts: [
-                {
-                    name: "Roboto",
-                    data: robotoArrayBuffer,
-                    weight: 400,
-                    style: "normal",
-                },
-            ],
-        });
-
-        const resvg = new Resvg(svg);
-        const pngData = resvg.render();
-        const pngBuffer = pngData.asPng();
-
-        return new Response(pngBuffer, {
-            headers: {
-                "content-type": "image/png",
-            },
-        });
+        return await objExample(robotoArrayBuffer, request);
     },
 };
